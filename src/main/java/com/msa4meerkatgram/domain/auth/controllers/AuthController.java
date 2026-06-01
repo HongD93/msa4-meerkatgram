@@ -1,14 +1,20 @@
 package com.msa4meerkatgram.domain.auth.controllers;
 
+import com.msa4meerkatgram.domain.auth.mapper.AuthMapper;
 import com.msa4meerkatgram.domain.auth.requests.LoginReq;
 import com.msa4meerkatgram.domain.auth.responses.AuthRes;
 import com.msa4meerkatgram.domain.auth.services.AuthService;
+import com.msa4meerkatgram.domain.user.mapper.UserMapper;
 import com.msa4meerkatgram.global.responses.GlobalRes;
+import com.msa4meerkatgram.global.security.cookie.CookieManager;
+import com.msa4meerkatgram.global.security.jwt.JwtConfig;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class AuthController {
     private final AuthService authService;
+    private final UserMapper userMapper;
+    private final AuthMapper authMapper;
+    private final CookieManager cookieManager;
+    private final JwtConfig jwtConfig;
 
     @PostMapping("/login")
     public ResponseEntity<GlobalRes<AuthRes>> login(
@@ -45,6 +55,21 @@ public class AuthController {
                         .message("토큰 재발급 완료")
                         .data(authService.reissue(request, response))
                         .build()
+        );
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<GlobalRes<String>> logout(
+        HttpServletResponse response
+        , @AuthenticationPrincipal Claims claims
+    ) {
+        authService.logout(response, Long.parseLong(claims.getSubject()));
+
+        return  ResponseEntity.status(200).body(
+            GlobalRes.<String>builder()
+                .code("00")
+                .message("로그아웃 완료")
+                .build()
         );
     }
 }
