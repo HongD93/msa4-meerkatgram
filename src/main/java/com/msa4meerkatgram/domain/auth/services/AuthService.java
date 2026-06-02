@@ -62,7 +62,7 @@ public class AuthService {
         User user = userMapper.findByPk(id);
 
         // 유저 가입 여부 확인
-        if(user == null) {
+        if(user == null || user.getRefreshToken() == null) {
             throw new InvalidTokenException("유효하지 않은 회원의 토큰입니다.");
         }
 
