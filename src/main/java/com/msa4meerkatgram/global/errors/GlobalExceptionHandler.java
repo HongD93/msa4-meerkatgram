@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -120,20 +121,27 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<GlobalRes<String>> othersHandle(Exception e ) {
-        log.error(String.format(
-                        "시스템 에러: %s\n%s"
-                        ,e.getMessage()
-                        ,Arrays.toString(e.getStackTrace())
-                )
-        );
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<GlobalRes<String>> sqlHandle(SQLException e) {
+        log.error("DB 에러" ,e);
         return ResponseEntity.status(500).body(
-                GlobalRes.<String>builder()
-                        .code("E99")
-                        .message("시스템 에러")
-                        .data("현재 서비스 이용이 불가합니다, 잠시후 다시 시도해 주십시오")
-                        .build()
+            GlobalRes.<String>builder()
+                .code("E80")
+                .message("DB 에러")
+                .data("현재 서비스 이용이 불가합니다, 잠시후 다시 시도해 주십시오")
+                .build()
+        );
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<GlobalRes<String>> othersHandle(Exception e) {
+        log.error("시스템 에러" ,e);
+        return ResponseEntity.status(500).body(
+            GlobalRes.<String>builder()
+                .code("E99")
+                .message("시스템 에러")
+                .data("현재 서비스 이용이 불가합니다, 잠시후 다시 시도해 주십시오")
+                .build()
         );
     }
 }
