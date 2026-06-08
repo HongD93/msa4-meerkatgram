@@ -1,5 +1,7 @@
 package com.msa4meerkatgram.domain.post.controllers;
 
+import com.msa4meerkatgram.domain.file.responses.FileRes;
+import com.msa4meerkatgram.domain.file.services.FileService;
 import com.msa4meerkatgram.domain.post.entities.Post;
 import com.msa4meerkatgram.domain.post.requests.PostIndexReq;
 import com.msa4meerkatgram.domain.post.responses.PostIndexRes;
@@ -8,10 +10,8 @@ import com.msa4meerkatgram.global.responses.GlobalRes;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @RestController
@@ -43,6 +43,19 @@ public class PostController {
                 .code("00")
                 .message("게시글 상세 정상 처리")
                 .data(result)
+                .build()
+        );
+    }
+
+    @PostMapping("/posts/create")
+    public ResponseEntity<GlobalRes<FileRes>> create(
+        @ModelAttribute MultipartFile file
+    ) {
+        return ResponseEntity.status(200).body(
+            GlobalRes.<FileRes>builder()
+                .code("00")
+                .message("파일 저장 성공")
+                .data(postService.create())
                 .build()
         );
     }
