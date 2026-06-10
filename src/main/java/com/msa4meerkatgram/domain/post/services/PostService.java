@@ -2,14 +2,13 @@ package com.msa4meerkatgram.domain.post.services;
 
 import com.msa4meerkatgram.domain.post.entities.Post;
 import com.msa4meerkatgram.domain.post.mapper.PostMapper;
+import com.msa4meerkatgram.domain.post.requests.PostCreateReq;
 import com.msa4meerkatgram.domain.post.requests.PostIndexReq;
 import com.msa4meerkatgram.domain.post.responses.PostIndexRes;
 import com.msa4meerkatgram.global.errors.custom.DeletedRecordException;
-import com.msa4meerkatgram.global.util.file.LocalFileManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostService {
     private final PostMapper postMapper;
-    private final LocalFileManager localFileManager;
 
     public PostIndexRes index(PostIndexReq postIndexReq) {
         int offset = (postIndexReq.page() - 1) * postIndexReq.limit();
@@ -47,16 +45,16 @@ public class PostService {
         return post;
     }
 
-    @Transactional
-    public String createPost(String content, MultipartFile file) {
-        String logicalFilePath = null;
+    @Transactional(rollbackFor = Exception.class)
+    public Post postCreate(PostCreateReq req, Long userId) {
+        Post post = Post.builder()
+                .userId(userId)
+                .content(req.content())
+                .image(req.image())
+                .build();
 
-        if (file != null && !file.isEmpty()) {
-            logicalFilePath = localFileManager.generatePostPath(file);
+        postMapper.postCreate(post);
 
-            localFileManager.saveFile(file, logicalFilePath);
-        }
-
-        return logicalFilePath;
+        return post;
     }
 }
