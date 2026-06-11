@@ -1,10 +1,14 @@
 package com.msa4meerkatgram.domain.post.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Post {
     private Long id;
     private Long userId;

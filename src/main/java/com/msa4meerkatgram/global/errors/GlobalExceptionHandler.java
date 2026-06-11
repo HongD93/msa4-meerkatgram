@@ -85,6 +85,17 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    public ResponseEntity<GlobalRes<String>> noResourceFoundHandle(org.springframework.web.servlet.resource.NoResourceFoundException e) {
+        return ResponseEntity.status(404).body(
+            GlobalRes.<String>builder()
+                .code("E20")
+                .message("존재하지 않는 리소스입니다.")
+                .data(e.getMessage())
+                .build()
+        );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<GlobalRes<Map<String, String>>> methodArgumentNotValidHandle(MethodArgumentNotValidException e) {
         Map<String, String> errors = e.getBindingResult()
