@@ -2,11 +2,13 @@ package com.msa4meerkatgram.domain.post.services;
 
 import com.msa4meerkatgram.domain.post.entities.Post;
 import com.msa4meerkatgram.domain.post.mapper.PostMapper;
+import com.msa4meerkatgram.domain.post.requests.PostCreateReq;
 import com.msa4meerkatgram.domain.post.requests.PostIndexReq;
 import com.msa4meerkatgram.domain.post.responses.PostIndexRes;
 import com.msa4meerkatgram.global.errors.custom.DeletedRecordException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,6 +41,19 @@ public class PostService {
         if(post == null) {
             throw new DeletedRecordException("이미 삭제된 게시글입니다.");
         }
+
+        return post;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Post postCreate(PostCreateReq req, Long userId) {
+        Post post = Post.builder()
+                .userId(userId)
+                .content(req.content())
+                .image(req.image())
+                .build();
+
+        postMapper.postCreate(post);
 
         return post;
     }
