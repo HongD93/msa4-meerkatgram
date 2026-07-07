@@ -5,9 +5,11 @@ storage/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-storage/
+error.log
+*.log
 
 ### STS ###
+storage
 .apt_generated
 .classpath
 .factorypath
@@ -27,6 +29,7 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+
 
 ### NetBeans ###
 /nbproject/private/
