@@ -1,7 +1,11 @@
 package com.msa4meerkatgram.domain.post.requests;
 
+
+import lombok.Builder;
+
+@Builder
 public record PostStoreReq(
-    String content,
-    String image
+        String content,
+        String image
 ) {
 }

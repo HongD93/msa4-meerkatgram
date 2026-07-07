@@ -30,7 +30,7 @@ spring:
       #    - `create`: 애플리케이션 실행 시 테이블 생성 (기존 데이터 삭제됨)
       #    - `create-drop`: 애플리케이션 종료 시 테이블 삭제
       #    - `validate`: 기존 테이블의 구조를 검증하고, 일치하지 않으면 예외 발생
-      ddl-auto: none
+      ddl-auto: create
     # 실행되는 SQL을 콘솔에 출력 여부
     show-sql: true
     properties:
@@ -48,7 +48,7 @@ spring:
       #      - `embedded`: 내장 데이터베이스일 경우에만 초기화 파일 실행
       #      - `always`: 모든 데이터 베이스에서 초기화 파일 항상 실행
       #      - `never`: 실행하지 않음
-      mode: never
+      mode: always
       # 사용할 DB 플랫폼 설정
       #   - all :  모든 플랫폼에서 설정을 적용
       #   - h2, mysql 등 : 특정 데이터베이스에만 초기화 파일을 실행
